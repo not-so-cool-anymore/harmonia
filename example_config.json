@@ -1,0 +1,18 @@
+[
+    {   
+        "status": "main",
+        "name": "<MAIN DATABASE NAME>",
+        "user": "<DATABASE USER NAME>",
+        "password": "<DATABASE USER PASSWORD>",
+        "tables": [
+            "<TABLE NAME>",
+            "<TABLE NAME>"
+        ]
+    },
+    {   
+        "status": "follower",
+        "name": "<FOLLOWER DATABASE NAME>",
+        "user": "<DATABASE USER NAME>",
+        "password": "<DATABASE USER PASSWORD>"
+    }
+]
