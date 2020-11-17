@@ -15,11 +15,11 @@ class Syncronizator():
 
                 self.__main_database_config = config.DatabaseConfig(**database_configs[0])
                 self.__follower_database_config = config.DatabaseConfig(**database_configs[1])
-
+                
             return True
         except Exception as exception:
             print('!!> An exception ocurred:')
-            print(exception)
+            print('!!> \"{}\"'.format(exception))
 
             return False
     
