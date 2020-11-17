@@ -14,7 +14,7 @@ class Syncronizator():
 
             return False
     
-    def syncronize(self):
+    def synchronize(self):
         return True
 
 def main():
@@ -33,7 +33,12 @@ def main():
         print('!!> Syncronizator config loading failed')
         return
     
-    print('>>> ')
+    print('>>> Starting database synchronization')
+    if syncronizator.synchronize():
+        print('>>> Synchronization was successful')
+        return
+
+    print('!!> Synchronization failed')
 
 if __name__ == '__main__':
     main()
