@@ -1,9 +1,10 @@
 class DatabaseConfig(object):
-    def __init__(self, status, name, user, password, tables=None):
+    def __init__(self, status, name, user, password, port=5432, tables=None):
         self.status = status
         self.name = name
         self.user = user
         self.password = password
+        self.port = port
         self.tables = tables
     
     def __repr__(self):
@@ -11,4 +12,5 @@ class DatabaseConfig(object):
         print('Name: {}'.format(self.name))
         print('User: {}'.format(self.user))
         print('Password: -hidden-')
+        print('Port: {}'.format(self.port))
         print('Tables: {}'.format(str(self.tables)))

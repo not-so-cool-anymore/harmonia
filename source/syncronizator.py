@@ -13,8 +13,8 @@ class Syncronizator():
 
                 database_configs = json.loads(config_file_content) 
 
-                self.__main_database_config = config.DatabaseConfig(**database_configs[0])
-                self.__follower_database_config = config.DatabaseConfig(**database_configs[1])
+                self.__main_database_configuration = config.DatabaseConfig(**database_configs[0])
+                self.__follower_database_configuration = config.DatabaseConfig(**database_configs[1])
                 
             return True
         except Exception as exception:
@@ -24,7 +24,45 @@ class Syncronizator():
             return False
     
     def synchronize(self):
+        print('>>> Establishing connection to main database')
+        main_db_connection, main_db_cursor = self.connect_to_host(self.__main_database_configuration)
+        
+        if main_db_connection == None or main_db_cursor == None:
+            return False
+        
+        print('>>> Establishing connection to connection database')
+        follower_db_connection, follower_db_cursor = self.connect_to_host(self.__follower_database_configuration)
+
+        if follower_db_connection == None or follower_db_cursor == None:
+            return False
+
+        for table in self.__main_database_configuration.tables:
+            scan_full_table(table)
+
         return True
+
+    def scan_full_table(self, connection_cursor, table_name):        
+        select_query = 'SELECT * FROM {}'.format(table_name)
+        connection_cursor.execute(select_query)
+
+        for row in connection_cursor:
+            print(str(row))
+
+    def connect_to_host(self, database_config):
+        try:
+            connection = psycopg2.connect(
+                database = database_config.name,
+                user = database_config.user,
+                password = database_config.password,
+                port = database_config.port
+            )
+            
+            connection_cursor = connection.cursor()
+
+            return connection, connection_cursor
+        except psycopg2.DatabaseError as exception:
+            print('!>> {}'.format(exception))
+            return None, None
 
 def main():
     if len(sys.argv) < 2:
