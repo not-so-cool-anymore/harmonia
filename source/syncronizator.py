@@ -1,12 +1,21 @@
 import sys
+import json
 import psycopg2
-
+import config 
 class Syncronizator():
     def __init__(self):
         super().__init__()
     
     def load_config(self, config_file_path):
         try:
+            with open(config_file_path, 'r') as config_file:
+                config_file_content = config_file.read()
+
+                database_configs = json.loads(config_file_content) 
+
+                self.__main_database_config = config.DatabaseConfig(**database_configs[0])
+                self.__follower_database_config = config.DatabaseConfig(**database_configs[1])
+
             return True
         except Exception as exception:
             print('!!> An exception ocurred:')
