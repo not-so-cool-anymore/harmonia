@@ -46,9 +46,11 @@ class Syncronizator():
         connection_cursor.execute(select_query)
 
         dump_file = open('{}_dump.sql'.format(table_name), 'w')
+        
         for row in connection_cursor:
             dump_file.write('INSET INTO {} VALUES ({});'.format(table_name, str(row)))
-            print(str(row))
+            print('>>> {}'.format(str(row)))
+        
         dump_file.close()
     
     def connect_to_host(self, database_config):
