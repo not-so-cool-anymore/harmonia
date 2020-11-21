@@ -32,15 +32,16 @@ class Syncronizator():
         return True
 
     def scan_database(self, database_config):
-        scan_command = 'PGPASSWORD={} pg_dump -h {} -U {} {} > scan.sql'.format(database_config.password, database_config.host, database_config.user, database_config.name)
-        
+        scan_command = 'PGPASSWORD={} pg_dump -h {} -U {} {} > scan.sql'.format(database_config.password, database_config.host, database_config.user, database_config.name)        
         subprocess.call(scan_command, shell=True)
 
-        print()
+        print(">>> Built finished")
 
     def build_database(self, database_config):
-        build_string = ''
-        print()
+        build_command = 'psql pg_restore -h {} -U {} -d {} < scan.sql'.format(database_config.host, database_config.user, database_config.name)
+        subprocess.call(build_command, shell=True)
+
+        print(">>> Built finished")
 
 def main():
     if len(sys.argv) < 2:
