@@ -37,7 +37,7 @@ class Syncronizator():
             return False
 
         for table in self.__main_database_configuration.tables:
-            scan_full_table(table)
+            self.scan_full_table(follower_db_cursor, table)
 
         return True
 
@@ -48,7 +48,7 @@ class Syncronizator():
         dump_file = open('{}_dump.sql'.format(table_name), 'w')
         
         for row in connection_cursor:
-            dump_file.write('INSET INTO {} VALUES ({});'.format(table_name, str(row)))
+            dump_file.write('INSET INTO {} VALUES ({});\n'.format(table_name, str(row)))
             print('>>> {}'.format(str(row)))
         
         dump_file.close()
@@ -58,6 +58,7 @@ class Syncronizator():
             connection = psycopg2.connect(
                 database = database_config.name,
                 user = database_config.user,
+                host= database_config.host,
                 password = database_config.password,
                 port = database_config.port
             )

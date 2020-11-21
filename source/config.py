@@ -1,10 +1,11 @@
 class DatabaseConfig(object):
-    def __init__(self, status, name, user, password, port=5432, tables=None):
+    def __init__(self, status, name, user, password, host, port=5432, tables=None):
         self.status = status
         self.name = name
         self.user = user
         self.password = password
         self.port = port
+        self.host = host
         self.tables = tables
     
     def __repr__(self):

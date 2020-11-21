@@ -4,9 +4,18 @@
         "name": "<MAIN DATABASE NAME>",
         "user": "<DATABASE USER NAME>",
         "password": "<DATABASE USER PASSWORD>",
+        "host": "<DATABASE HOST>",
         "port": 99999,
         "tables": [
-            "<TABLE NAME>",
+            {
+                "name": "<TABLE NAME>",
+                "columns":[
+                    {
+                        "name": "<COLUMN NAME>",
+                        "value_type": "<VALUE TYPE>"
+                    }
+                ]
+            },
             "<TABLE NAME>"
         ]
     },
@@ -14,7 +23,8 @@
         "status": "follower",
         "name": "<FOLLOWER DATABASE NAME>",
         "user": "<DATABASE USER NAME>",
-        "port": 99999,
-        "password": "<DATABASE USER PASSWORD>"
+        "password": "<DATABASE USER PASSWORD>",
+        "host": "<DATABASE HOST>",
+        "port": 99999
     }
 ]
