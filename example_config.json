@@ -5,19 +5,7 @@
         "user": "<DATABASE USER NAME>",
         "password": "<DATABASE USER PASSWORD>",
         "host": "<DATABASE HOST>",
-        "port": 99999,
-        "tables": [
-            {
-                "name": "<TABLE NAME>",
-                "columns":[
-                    {
-                        "name": "<COLUMN NAME>",
-                        "value_type": "<VALUE TYPE>"
-                    }
-                ]
-            },
-            "<TABLE NAME>"
-        ]
+        "port": 99999
     },
     {   
         "status": "follower",

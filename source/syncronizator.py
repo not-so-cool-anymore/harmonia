@@ -2,6 +2,8 @@ import sys
 import json
 import psycopg2
 import config 
+import subprocess
+
 class Syncronizator():
     def __init__(self):
         super().__init__()
@@ -24,51 +26,21 @@ class Syncronizator():
             return False
     
     def synchronize(self):
-        print('>>> Establishing connection to main database')
-        main_db_connection, main_db_cursor = self.connect_to_host(self.__main_database_configuration)
+        print('>>> Scanning main database')
+        self.scan_database(self.__main_database_configuration)
         
-        if main_db_connection == None or main_db_cursor == None:
-            return False
-        
-        print('>>> Establishing connection to connection database')
-        follower_db_connection, follower_db_cursor = self.connect_to_host(self.__follower_database_configuration)
-
-        if follower_db_connection == None or follower_db_cursor == None:
-            return False
-
-        for table in self.__main_database_configuration.tables:
-            self.scan_full_table(follower_db_cursor, table)
-
         return True
 
-    def scan_full_table(self, connection_cursor, table_name):        
-        select_query = 'SELECT * FROM {}'.format(table_name)
-        connection_cursor.execute(select_query)
-
-        dump_file = open('{}_dump.sql'.format(table_name), 'w')
+    def scan_database(self, database_config):
+        scan_command = 'PGPASSWORD={} pg_dump -h {} -U {} {} > scan.sql'.format(database_config.password, database_config.host, database_config.user, database_config.name)
         
-        for row in connection_cursor:
-            dump_file.write('INSET INTO {} VALUES ({});\n'.format(table_name, str(row)))
-            print('>>> {}'.format(str(row)))
-        
-        dump_file.close()
-    
-    def connect_to_host(self, database_config):
-        try:
-            connection = psycopg2.connect(
-                database = database_config.name,
-                user = database_config.user,
-                host= database_config.host,
-                password = database_config.password,
-                port = database_config.port
-            )
-            
-            connection_cursor = connection.cursor()
+        subprocess.call(scan_command, shell=True)
 
-            return connection, connection_cursor
-        except psycopg2.DatabaseError as exception:
-            print('!>> {}'.format(exception))
-            return None, None
+        print()
+
+    def build_database(self, database_config):
+        build_string = ''
+        print()
 
 def main():
     if len(sys.argv) < 2:
