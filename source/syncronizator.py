@@ -18,6 +18,11 @@ class Syncronizator():
                 self.__main_database_configuration = config.DatabaseConfig(**database_configs[0])
                 self.__follower_database_configuration = config.DatabaseConfig(**database_configs[1])
                 
+                print('>>> Loaded configurations: ')
+                print(repr(self.__main_database_configuration))
+                print(25*'-')
+                print(repr(self.__follower_database_configuration))
+
             return True
         except Exception as exception:
             print('!!> An exception ocurred:')
