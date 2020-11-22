@@ -34,6 +34,8 @@ class Syncronizator():
         print('>>> Scanning main database')
         self.scan_database(self.__main_database_configuration)
         
+        print('>>> Building follower database')
+        self.build_database(self.__follower_database_configuration)
         return True
 
     def scan_database(self, database_config):
