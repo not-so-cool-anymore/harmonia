@@ -1,6 +1,5 @@
 import sys
 import json
-import psycopg2
 import config 
 import subprocess
 
