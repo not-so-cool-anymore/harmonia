@@ -45,7 +45,7 @@ class Syncronizator():
         print(">>> Built finished")
 
     def build_database(self, database_config):
-        build_command = 'psql pg_restore -h {} -U {} -d {} < scan.sql'.format(database_config.host, database_config.user, database_config.name)
+        build_command = 'PGPASSWORD={} psql pg_restore -h {} -U {} -d {} < scan.sql'.format(database_config.password, database_config.host, database_config.user, database_config.name)
         subprocess.call(build_command, shell=True)
 
         print(">>> Built finished")
