@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import config 
@@ -18,9 +19,9 @@ class Syncronizator():
                 self.__follower_database_configuration = config.DatabaseConfig(**database_configs[1])
                 
                 print('>>> Loaded configurations: ')
-                print(repr(self.__main_database_configuration))
-                print(25*'-')
-                print(repr(self.__follower_database_configuration))
+                repr(self.__main_database_configuration)
+                print(25 * '-' )
+                repr(self.__follower_database_configuration)
 
             return True
         except Exception as exception:
@@ -38,14 +39,16 @@ class Syncronizator():
         return True
 
     def scan_database(self, database_config):
-        scan_command = 'PGPASSWORD={} pg_dump -h {} -U {} {} > scan.sql'.format(database_config.password, database_config.host, database_config.user, database_config.name)        
+        scan_command = 'PGPASSWORD={} pg_dump -F t -h {} -U {} {} > scan.tar'.format(database_config.password, database_config.host, database_config.user, database_config.name)        
         subprocess.call(scan_command, shell=True)
 
         print(">>> Built finished")
 
     def build_database(self, database_config):
-        build_command = 'PGPASSWORD={} psql pg_restore -h {} -U {} -d {} < scan.sql'.format(database_config.password, database_config.host, database_config.user, database_config.name)
+        build_command = 'PGPASSWORD={} pg_restore --clean -h {} -U {} -d {} scan.tar'.format(database_config.password, database_config.host, database_config.user, database_config.name)
         subprocess.call(build_command, shell=True)
+
+        os.remove('scan.tar')
 
         print(">>> Built finished")
 

@@ -23,3 +23,5 @@ class DatabaseConfig(object):
         print('Password: -hidden-')
         print('Port: {}'.format(self.port))
         print('Host: {}'.format(self.host))
+    
+        return ""
