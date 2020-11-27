@@ -34,23 +34,59 @@ class Syncronizator():
         print('>>> Scanning main database')
         self.scan_database(self.__main_database_configuration)
         
+        print('>>> Truncating tables in DB.')
+        self.__truncate_tables(self.__follower_database_configuration)
+
         print('>>> Building follower database')
         self.build_database(self.__follower_database_configuration)
         return True
 
     def scan_database(self, database_config):
-        scan_command = 'PGPASSWORD={} pg_dump -F t -h {} -U {} {} > scan.tar'.format(database_config.password, database_config.host, database_config.user, database_config.name)        
+        scan_command = 'PGPASSWORD={} pg_dump -F t --inserts -h {} -U {} {} > scan.tar'.format(database_config.password, database_config.host, database_config.user, database_config.name)        
         subprocess.call(scan_command, shell=True)
 
         print(">>> Built finished")
 
     def build_database(self, database_config):
-        build_command = 'PGPASSWORD={} pg_restore --clean -h {} -U {} -d {} scan.tar'.format(database_config.password, database_config.host, database_config.user, database_config.name)
+        build_command = 'PGPASSWORD={} pg_restore --create -h {} -U {} -d {} scan.tar'.format(database_config.password, database_config.host, database_config.user, database_config.name)
         subprocess.call(build_command, shell=True)
 
         os.remove('scan.tar')
 
         print(">>> Built finished")
+
+    def __truncate_tables(self, database_config):
+        get_tables_command = 'PGPASSWORD={} psql -h {} -U {} -d {} -c "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname != \'pg_catalog\' AND schemaname != \'information_schema\';" -e nomedb >> tables.txt'.format(
+            database_config.password,
+            database_config.host, 
+            database_config.user, 
+            database_config.name
+        )
+
+        subprocess.call(get_tables_command, shell=True)
+        print('>>> Table names were dumped.')
+
+        tables_file_content = None
+
+        with open('tables.txt', 'r') as tables_file:
+            tables_file_content = tables_file.readlines()[4:]
+        
+        os.remove('tables.txt')
+
+        for table in tables_file_content:
+            if table.startswith('('):
+                break
+            table_name = table.replace(' ', '').replace('\n', '')
+
+            truncate_tables_command = 'PGPASSWORD={} psql -h {} -U {} -d {} -c"TRUNCATE TABLE {};"'.format(
+                database_config.password, 
+                database_config.host, 
+                database_config.user, 
+                database_config.name, 
+                table_name, 
+            )
+            subprocess.call(truncate_tables_command, shell=True)
+        print('>>> Tables were truncated.')
 
 def main():
     if len(sys.argv) < 2:
